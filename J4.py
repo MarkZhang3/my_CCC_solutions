@@ -1,27 +1,24 @@
 from sys import stdin
 input = stdin.readline
 s = input().strip()
-num = [0, 0, 0]
-alph = "LMS"
-for i in s:
-    num[alph.index(i)] += 1 
-num[1] += num[0]
-num[2] += num[1]
+alpha = 'LMS'
+ind = [s.count('L')]
+ind.append(ind[0] + s.count('M'))
+ind.append(ind[-1] + s.count('S'))
+ct = [
+    (s[:ind[0]].count('M'), s[:ind[0]].count('S')),
+    (s[ind[0]:ind[1]].count('L'), s[ind[0]:ind[1]].count('S')),
+    (s[ind[1]:].count('L'), s[ind[1]:].count('M'))
+        ]
 ans = 0
-for i in range(num[0]):
-    if s[i] == 'M':
-        if 'L' in s[num[0]:num[1]]:
-            ans += 1 
-        else:
-            ans += 2
-    elif s[i] == 'S':
-        if 'L' in s[num[1]:]:
-            ans += 1 
-        else:
-            ans += 2 
-for i in range(num[0], num[1]):
-    if s[i] == 'S':
-        if 'S' in s[num[0]:num[1]]:
-            ans += 1 
-print(s[num[0]:num[1]], s[num[1]:])
-print(ans)
+ans += min(ct[0][0], ct[1][0]) 
+ans += min(ct[0][1], ct[2][0])
+ans += min(ct[1][1], ct[2][1])
+#print(ans)
+sum = 0
+for i in ct:
+    sum += i[0] + i[1]
+ans += ((sum - ans*2)/3)*2
+print(int(ans))
+
+
