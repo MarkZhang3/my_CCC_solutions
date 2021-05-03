@@ -1,1 +1,1 @@
-# my_CCC_solutions
+# My solutions to DMOJ problems
