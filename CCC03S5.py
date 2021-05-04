@@ -1,43 +1,45 @@
 from sys import stdin, exit
+from collections import deque
 input = stdin.readline
-for case in range(10):
-    n = int(input())
-    ans = 0
-    points = []
-    for _ in range(n):
-        x, y = map(int, input().split())
-        points.append((x, y))
-    if n%2 != 0:
-        print(0)
-        continue
-    subarr = []
-    for i in range(n//2):
-        x1, y1 = points[i]
-        x2, y2 = points[n//2 + i]
-        #print(x1, y1)
-        #print(x2, y2)
-        m, mp = 999999999999, 999999999999 #999999999999 = UND
-        if (y1-y2) != 0:
-            mp = -1 * (x1-x2) / (y1-y2) 
-        if (x1-x2) != 0:
-            m = (1/mp)*(-1)
-        subarr = points[:i] + points[n//2+i+1:]
-        #print(subarr)
-        f = 1
-        #print(mp)
-        yint1 = y1-(m*x1)
-        #print('eqn',m, yint1)
-        for j in range(i+1, i + n//2):
-            a, b = points[j] 
-            #eqn: y = mx + b, y = mp + b 
-            yint2 = b - (mp * a)
-            POIx = (yint2 - yint1) / (m - mp)
-            POIy = m * (POIx) + yint1 
-            dx, dy = POIx - a, POIy - b  
-            newp = (round(POIx+dx), round(POIy+dy))
-            #print(a, b, newp, POIx, POIy, m, mp)
-            if newp not in subarr:
-                f = 0 
-                break
-        ans += f 
-    print(ans)
+def root(n):
+    while dsu[n] != n:
+        dsu[n] = dsu[dsu[n]]
+        n = dsu[n]
+    return n 
+c, r, d = map(int, input().split())
+graph = []
+for i in range(r):
+    u, v, w = map(int, input().split())
+    graph.append((w, u, v))
+vis = [0]*(c+1)
+for i in range(d):
+    vis[int(input())] = 1
+vis[1] = 1 
+d += 1 
+dsu = [i for i in range(c+1)]
+graph.sort(reverse = True)
+best = 9999999999
+path = []
+for edge in graph:
+    w, u, v = edge
+    rootA, rootB = root(u), root(v)
+    if rootA != rootB:
+        if vis[u]:
+            #print(u)
+            d -= 1 
+            #print(d)
+            vis[u] = 0
+        if vis[v]:
+            #print(v)
+            d -= 1 
+            #print(d)
+            vis[v] = 0
+        if w < best:
+            best = w 
+        dsu[rootB] = rootA
+        #path.append(u)
+        #path.append(v)
+    if d <= 0:
+        break
+    #print(dsu)
+print(best)
